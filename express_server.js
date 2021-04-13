@@ -35,12 +35,12 @@ app.post("/urls", (req, res)=> {
   console.log(req.body.longURL); // bodyParser processed the body and gave us the decoded content in the form of object and throw it into the req.body
   urlDatabase[generateRandomString()] = req.body.longURL;
   console.log('new urlDatabase obj', urlDatabase);
-  res.send("OK");
+  res.redirect("urls");
 })
 
 app.get("/urls/new", (req, res) => {
   res.render('urls_new');
-})
+});
 
 app.get("/urls/:shortURL", (req, res) => {
   // above value behind ":", in this case, "shortURL" is populated to req.param object as the key and the actual value passed in becomes the value: eg. req.params = {shortURL: "b2xVn2"}
@@ -49,6 +49,11 @@ app.get("/urls/:shortURL", (req, res) => {
     longURL: urlDatabase[req.params.shortURL]
   }
   res.render('urls_show', templateShow);
+})
+
+app.post('/urls/:shortURL/delete', (req, res) => {
+  delete urlDatabase[req.params.shortURL];
+  res.redirect('/urls');
 })
 
 
