@@ -15,9 +15,18 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase};
-  res.render('urls_index',templateVars);
+  const templateIndex = { urls: urlDatabase};
+  res.render('urls_index',templateIndex);
 });
+
+app.get("/urls/:shortURL", (req, res) => {
+  // above value behind ":", in this case, "shortURL" is populated to req.param object as the key and the actual value passed in becomes the value: eg. req.params = {shortURL: "b2xVn2"}
+  const templateShow = {
+    shortURL: req.params.shortURL,
+    longURL: urlDatabase[req.params.shortURL]
+  }
+  res.render('urls_show', templateShow);
+})
 
 
 
