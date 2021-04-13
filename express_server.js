@@ -21,7 +21,9 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.set('view engine', 'ejs');
 
 app.get("/", (req, res) => {
-  // Home page
+  // Home
+  const templateIndex = { urls: urlDatabase};
+  res.render('urls_index',templateIndex);
 });
 
 app.get("/urls", (req, res) => {
@@ -30,7 +32,9 @@ app.get("/urls", (req, res) => {
 });
 
 app.post("/urls", (req, res)=> {
-  console.log(req.body);
+  console.log(req.body.longURL); // bodyParser processed the body and gave us the decoded content in the form of object and throw it into the req.body
+  urlDatabase[generateRandomString()] = req.body.longURL;
+  console.log('new urlDatabase obj', urlDatabase);
   res.send("OK");
 })
 
