@@ -33,14 +33,22 @@ app.get("/urls", (req, res) => {
 
 app.post("/urls", (req, res)=> {
   console.log(req.body.longURL); // bodyParser processed the body and gave us the decoded content in the form of object and throw it into the req.body
-  urlDatabase[generateRandomString()] = req.body.longURL;
+  urlDatabase[generateRandomString()] = `http://${req.body.longURL}`;
   console.log('new urlDatabase obj', urlDatabase);
-  res.redirect("urls");
+  const keysArr = Object.keys(urlDatabase);
+  const key = keysArr[keysArr.length-1];
+  res.redirect(`/urls/${key}`);
 })
 
 app.get("/urls/new", (req, res) => {
   res.render('urls_new');
 });
+
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL];
+  console.log(longURL);
+  res.redirect(longURL);
+})
 
 app.get("/urls/:shortURL", (req, res) => {
   // above value behind ":", in this case, "shortURL" is populated to req.param object as the key and the actual value passed in becomes the value: eg. req.params = {shortURL: "b2xVn2"}
