@@ -2,12 +2,22 @@ const { response } = require('express');
 const express = require('express');
 const app = express();
 const PORT = 8080;
+const bodyParser = require('body-parser');
 
+const generateRandomString = () => {
+  // return a string of 6 random alphaNumeric characters
+  let output = "";
+  const alphaNumeric = "0123456789abcdefghij0123456789klmnopqrstuvwxyzABCD0123456789EFGHIJKLMNOPQRSTUVWXYZ";
+  for (let i = 0; i < 6; i++) {
+    output += alphaNumeric[(Math.floor(Math.random()*alphaNumeric.length))];
+  }
+  return output;
+}
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
-
+app.use(bodyParser.urlencoded({extended:true}));
 app.set('view engine', 'ejs');
 
 app.get("/", (req, res) => {
@@ -18,6 +28,15 @@ app.get("/urls", (req, res) => {
   const templateIndex = { urls: urlDatabase};
   res.render('urls_index',templateIndex);
 });
+
+app.post("/urls", (req, res)=> {
+  console.log(req.body);
+  res.send("OK");
+})
+
+app.get("/urls/new", (req, res) => {
+  res.render('urls_new');
+})
 
 app.get("/urls/:shortURL", (req, res) => {
   // above value behind ":", in this case, "shortURL" is populated to req.param object as the key and the actual value passed in becomes the value: eg. req.params = {shortURL: "b2xVn2"}
