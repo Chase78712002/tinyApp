@@ -72,6 +72,11 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   res.redirect('/urls');
 })
 
+app.post('/urls/:shortURL', (req, res) => {
+  urlDatabase[req.params.shortURL] = `http://${req.body.newURL}`;
+  res.redirect("/urls");
+})
+
 app.post('/login', (req, res) => {
   const usernameValue = req.body.username;
   const username = Object.keys(req.body);
