@@ -17,6 +17,15 @@
       </div>
     <div class="card-footer text-muted"></div>
   </div>
+  <div class="card text-center">
+    <form method="POST" action="/urls/<%= shortURL%>">
+      <h3 class="card text-center" style="padding: 1em; font-size: 50px;">Edit</h3>
+      <label for="newURL">New URL:</label>
+      <input type="text" name="newURL" placeholder="http://" style="width: 300px; margin: 1em">
+    
+      <button type="submit" class="btn btn-primary btn-sm">Update URL</button>
+    </form>
+  </div>
 
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
