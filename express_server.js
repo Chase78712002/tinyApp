@@ -4,6 +4,7 @@ const app = express();
 const PORT = 8080;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 
 const generateRandomString = () => {
   // return a string of 6 random alphaNumeric characters
@@ -77,7 +78,7 @@ app.get("/urls", (req, res) => {
     user: users[req.cookies["user_id"]],
     cookie: req.cookies
   };
-  if (loggedIn(req.cookies)){
+  if (loggedIn(req.cookies)) {
     templateVars.urls = urlsForUser(req.cookies['user_id']);
   }
   res.render('urls_index', templateVars);
@@ -148,24 +149,19 @@ app.get('/login', (req, res) => {
 app.post('/login', (req, res) => {
   const testEmail = req.body.email;
   const testPassword = req.body.password;
-  // compare the test email&password with the ones we have in database
-  const emailMatch = databaseCheck(testEmail, "email");
-  const passwordMatch = databaseCheck(testPassword, "password");
+  const userMatch = databaseCheck(testEmail, "email");
   // if email not match, return 403
-  if (!emailMatch) {
+  if (!userMatch) {
     res.status(403)
     return res.send('Incorrect email, try again later');
   }
-  // if passwords not match, return 403
-  if (!passwordMatch) {
-    res.status(403);
-    return res.send('Incorrect password, try again later');
+  if (bcrypt.compareSync(testPassword, userMatch.password)) {
+    res.cookie('user_id', userMatch.id);
+    return res.redirect('/urls');
   }
-  // if all match, set user_id cookie with the random ID
-  res.cookie('user_id', passwordMatch.id);
-  // redirect back to the /urls
-  res.redirect('/urls');
-
+  // if passwords not match, return 403
+  res.status(403);
+  return res.send('Incorrect password, try again later');
 });
 // Registration page
 app.get('/register', (req, res) => {
@@ -178,7 +174,10 @@ app.post('/register', (req, res) => {
   // add new user object to the users (global) object
   const newEmail = req.body.email;
   const newPassword = req.body.password;
+  const hashedNewPassword = bcrypt.hashSync(newPassword, 10);
   const newRandomID = generateRandomString();
+  console.log('newPassword', newPassword);
+  console.log('hashedPassword', hashedNewPassword);
   // if email or password are empty, return 400
   if (!newEmail || !newPassword) {
     res.status(400);
@@ -187,14 +186,13 @@ app.post('/register', (req, res) => {
   // if duplicated email, return 400
   const existingUser = databaseCheck(newEmail, "email");
   if (existingUser) {
-    console.log('This new user exists', existingUser);
     res.status(400);
     res.end();
   }
   users[newRandomID] = {
     "id": newRandomID,
     "email": newEmail,
-    "password": newPassword
+    "password": hashedNewPassword
   };
   // set 'user_id' cookie paired with the generated random ID
   res.cookie('user_id', newRandomID);
@@ -216,5 +214,5 @@ app.post('/logout', (req, res) => {
 
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`);
+  console.log(`Tiny app listening on port ${PORT}`);
 });
