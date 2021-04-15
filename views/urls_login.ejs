@@ -8,27 +8,27 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
     integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-  <title>Registration Page</title>
+  <title>Log In</title>
 </head>
 
 <body>
-  <%- include('partials/_header') %>
+  <%- include('partials/_header')%>
 
     <div>
-      <form action="/register" method="post" style="padding: 25px; width: 500px;">
-        <h1><b>Create Account</b></h1>
+      <form action="/login" method="post" style="padding: 25px; width: 500px;">
+        <h1><b>Login</b></h1>
         <div class="form-group">
           <label for="email">Email Address</label>
-          <input type="email" name="email" class="form-control" placeholder="Enter Email">
+          <input type="email" name="email" placeholder="Enter Email" class="form-control">
         </div>
 
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" name="password" class="form-control" placeholder="Password">
+          <input type="password" name="password" placeholder="Password" class="form-control">
         </div>
 
-        <button type="submit" class="btn btn-primary">Register</button>
-      
+        <button type="submit" class="btn btn-outline-success">Log in</button>
+
       </form>
     </div>
 </body>

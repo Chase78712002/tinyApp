@@ -10,16 +10,17 @@ const generateRandomString = () => {
   let output = "";
   const alphaNumeric = "0123456789abcdefghij0123456789klmnopqrstuvwxyzABCD0123456789EFGHIJKLMNOPQRSTUVWXYZ";
   for (let i = 0; i < 6; i++) {
-    output += alphaNumeric[(Math.floor(Math.random()*alphaNumeric.length))];
+    output += alphaNumeric[(Math.floor(Math.random() * alphaNumeric.length))];
   }
   return output;
 }
-const emailDuplicateCheck = (newEmail, emailInDatabase) => {
-  if (newEmail === emailInDatabase) {
-    return true;
-  } else {
-    return false;
+const databaseCheck = (testValue, databaseProperty) => {
+  for (const user in users) {
+    if (testValue === users[user][databaseProperty]) {
+      return users[user];
+    }
   }
+  return false;
 }
 // Database objects
 const urlDatabase = {
@@ -28,8 +29,8 @@ const urlDatabase = {
 };
 const users = {
   "userRandomID": {
-    id: "userRandomID", 
-    email: "user@example.com", 
+    id: "userRandomID",
+    email: "user@example.com",
     password: "purple-monkey-dinosaur"
   },
   "E7HRz3": {
@@ -38,7 +39,7 @@ const users = {
     password: "qwerty"
   }
 }
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.set('view engine', 'ejs');
 
@@ -49,11 +50,11 @@ app.set('view engine', 'ejs');
 // });
 // Main page
 app.get("/urls", (req, res) => {
-  const templateVars = { 
+  const templateVars = {
     urls: urlDatabase,
     user: users[req.cookies["user_id"]]
   };
-  res.render('urls_index',templateVars);
+  res.render('urls_index', templateVars);
 });
 // Create shortURL page
 app.get("/urls/new", (req, res) => {
@@ -63,12 +64,12 @@ app.get("/urls/new", (req, res) => {
   res.render('urls_new', templateVars);
 });
 // Handle the post request after the user submit their longURL
-app.post("/urls", (req, res)=> {
+app.post("/urls", (req, res) => {
   console.log(req.body.longURL); // bodyParser processed the body and gave us the decoded content in the form of object and throw it into the req.body
   urlDatabase[generateRandomString()] = `http://${req.body.longURL}`;
   console.log('new urlDatabase obj', urlDatabase);
   const keysArr = Object.keys(urlDatabase);
-  const key = keysArr[keysArr.length-1];
+  const key = keysArr[keysArr.length - 1];
   res.redirect(`/urls/${key}`);
 })
 // Showing newly created url page
@@ -97,13 +98,33 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   res.redirect('/urls');
 });
 // Login
+app.get('/login', (req, res) => {
+  const templateVars = {
+    user: users[req.cookies["user_id"]]
+  }
+  res.render('urls_login', templateVars);
+})
 app.post('/login', (req, res) => {
-  const usernameValue = req.body.username;
-  const username = Object.keys(req.body);
-  //set a cookie named username to the value submitted in the request body via the login form
-  // res.cookie(username, usernameValue);
+  const testEmail = req.body.email;
+  const testPassword = req.body.password;
+  // compare the test email&password with the ones we have in database
+  const emailMatch = databaseCheck(testEmail, "email");
+  const passwordMatch = databaseCheck(testPassword, "password");
+  // if email not match, return 403
+  if (!emailMatch) {
+    res.status(403)
+    return res.send('Incorrect email, try again later');
+  }
+  // if passwords not match, return 403
+  if (!passwordMatch) {
+    res.status(403);
+    return res.send('Incorrect password, try again later');
+  }
+  // if all match, set user_id cookie with the random ID
+  res.cookie('user_id', passwordMatch.id);
   // redirect back to the /urls
   res.redirect('/urls');
+
 });
 // Registration page
 app.get('/register', (req, res) => {
@@ -123,14 +144,11 @@ app.post('/register', (req, res) => {
     res.end();
   }
   // if duplicated email, return 400
-  for (let user in users) {
-    if (emailDuplicateCheck(newEmail, users[user].email)) {
-      console.log('This new email exists', newEmail);
-      console.log('This is already in the database', users[user].email);
-      res.status(400);
-      res.end();
-    }
-
+  const existingUser = databaseCheck(newEmail,"email");
+  if (existingUser) {
+    console.log('This new user exists', existingUser);
+    res.status(400);
+    res.end();
   }
   users[newRandomID] = {
     "id": newRandomID,
@@ -141,7 +159,7 @@ app.post('/register', (req, res) => {
   res.cookie('user_id', newRandomID);
   // driver code
   console.log(`\n This is the content of the users global objects: \n ${JSON.stringify(users)}`);
-  
+
   // redirect to /urls
   res.redirect('/urls');
   console.log("Here's the req.cookies for user_id", req.cookies)

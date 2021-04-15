@@ -15,21 +15,21 @@
       </div>
     </div>
     <% if (user) { %>
-      <div style="margin-right: 50px; font-size: 30px;">Logged in as:  <%= user.email %></div>
-      <form action="/logout" method="POST">
-      <button type="submit" class="btn btn-outline-warning">Log out</button>
-      </form>
-    <% } else { %>
-      <form class="form-inline" method="POST" action="/login">
-        <input type="text" name="username" placeholder="Username" class="form-control mr-3">
-        <button type="submit" class="btn btn-outline-dark">Log in</button>
-      </form>
-    <% } %>
-      <div style="margin-left: 20px;">
-        <form action="/register" method="GET">
-        <button type="submit" class="btn btn-outline-primary">Register</button>
-        </form>
+      <div style="font-size: 25px;">Logged in as: <%= user.email %>
       </div>
+          <form action="/logout" method="POST" style="padding-left: 50px;">
+            <button type="submit" class="btn btn-outline-warning">Log out</button>
+          </form>
+      <% } else { %>
+        <form class="form-inline" method="get" action="/login">
+          <button type="submit" class="btn btn-outline-dark">Log in</button>
+        </form>
+        <div style="margin-left: 20px;">
+          <form action="/register" method="GET">
+            <button type="submit" class="btn btn-outline-primary">Register</button>
+          </form>
+        </div>
+        <% } %>
 
 
   </nav>
