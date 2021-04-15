@@ -129,7 +129,9 @@ app.post('/urls/:shortURL', (req, res) => {
 // Delete
 app.post('/urls/:shortURL/delete', (req, res) => {
   // if url user id match with current user id
-  if (req.cookies['user_id'] === req.params.shortURL) {
+  const currentUserID = req.cookies['user_id'];
+  const urlUserID = urlDatabase[req.params.shortURL].userID
+  if (currentUserID === urlUserID) {
     delete urlDatabase[req.params.shortURL];
     return res.redirect('/urls');
   }
