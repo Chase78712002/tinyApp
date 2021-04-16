@@ -37,27 +37,22 @@ const urlsForUser = (id) => {
 
 // Database objects
 const urlDatabase = {
-  "b2xVn2": { longURL: "http://www.lighthouselabs.ca", userID: "E7HRz3" },
-  "9sm5xK": { longURL: "http://www.google.com", userID: "E7HRz3" },
-  "cBYvji": { longURL: "http://www.youtube.com", userID: "0w1dxG" },
-  "cnJMLf": { longURL: "http://www.getbootstrap.com", userID: "0w1dxG" },
-  "R9tO59": { longURL: "http://www.pomofocus.io", userID: "j22L2z" }
+  "b2xVn2": { longURL: "http://www.lighthouselabs.ca", userID: "h7z6gB" },
+  "9sm5xK": { longURL: "http://www.google.com", userID: "h7z6gB" },
+  "cBYvji": { longURL: "http://www.youtube.com", userID: "2cmglg" },
+  "cnJMLf": { longURL: "http://www.getbootstrap.com", userID: "2cmglg" },
+  "R9tO59": { longURL: "http://www.pomofocus.io", userID: "2cmglg" }
 };
 const users = {
-  "j22L2z": {
-    id: "j22L2z",
-    email: "user@example.com",
-    password: "1234"
+  'h7z6gB': {
+    id: 'h7z6gB',
+    email: 'aloha1234@nomail.com',
+    password: '$2b$10$nA0Ibn5nPjFhvqj2ww9oyOJrVEhLxmf9IbSV0SOgMHXVmh1JVptvS' //qwer
   },
-  "E7HRz3": {
-    id: "E7HRz3",
-    email: "aloha1234@nomail.com",
-    password: "qwerty"
-  },
-  "0w1dxG": {
-    id: "0w1dxG",
-    email: "pineapple123@nomail.com",
-    password: "asdf"
+  '2cmglg': {
+    id: '2cmglg',
+    email: 'pineapple123@nomail.com',
+    password: '$2b$10$JH8y5zQeWdkDSqnsvU8sq.xN/wPnHiokwjaEvO0HeWgKuTN6rHZPe' //123
   }
 }
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -67,7 +62,6 @@ app.use(cookieSession({
   name: 'user_id',
   keys: ['super-secret-key']
 }))
-
 
 // app.get("/", (req, res) => {
 //   // Home
@@ -79,7 +73,6 @@ app.use(cookieSession({
 // }
 // Main page
 app.get("/urls", (req, res) => {
-  console.log('top of url',req.session.user_id);
   const templateVars = {
     urls: urlDatabase,
     user: users[req.session.user_id],
@@ -87,16 +80,15 @@ app.get("/urls", (req, res) => {
   };
   if (req.session.user_id) {
     templateVars.urls = urlsForUser(req.session.user_id);
-    console.log(req.session.user_id);
   }
-  console.log(templateVars.user);
-  console.log('bottom of url',req.session.user_id);
+  console.log(users);
+  console.log('bottom of url', req.session.user_id);
   res.render('urls_index', templateVars);
 });
 // Create shortURL page
 app.get("/urls/new", (req, res) => {
   // if not logged in. redirect to /login
-  if (req.session.user_id) {
+  if (!req.session.user_id) {
     return res.redirect("/login");
   }
   const templateVars = {
@@ -133,7 +125,7 @@ app.get("/u/:shortURL", (req, res) => {
 });
 // Update URL
 app.post('/urls/:shortURL', (req, res) => {
-  urlDatabase[req.params.shortURL] = `http://${req.body.newURL}`;
+  urlDatabase[req.params.shortURL] = { "longURL": `http://${req.body.newURL}`, "userID": req.session.user_id };
   res.redirect("/urls");
 });
 // Delete
@@ -147,14 +139,6 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   res.status(403);
   res.end("You have no permission to delete this URL!!")
 });
-
-app.get('/alvin', (req, res) => {
-  req.session.newCookie = 'abcde';
-  res.cookie('key', 'value');
-  res.send('hello');
-})
-
-
 
 // Login
 app.get('/login', (req, res) => {
@@ -191,7 +175,7 @@ app.get('/register', (req, res) => {
 app.post('/register', (req, res) => {
   const newEmail = req.body.email;
   const newPassword = req.body.password;
-  
+
   if (!newEmail || !newPassword) {
     return res.status(400).send('invalid email password');
   }
@@ -209,7 +193,6 @@ app.post('/register', (req, res) => {
     "password": hashedNewPassword
   };
   // set 'user_id' cookie paired with the generated random ID
-  console.log(newRandomID);
   req.session.user_id = newRandomID;
   console.log('hi , im below req.session.user_id', req.session.user_id);
   // redirect to /urls

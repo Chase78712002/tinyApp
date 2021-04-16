@@ -13,8 +13,7 @@
 
 <body>
   <%- include('partials/_header') %>
-    <% if (cookie) { %>
-      <% console.log(cookie);%>
+    <% if (!cookie) { %>
       <div>
         <h2>Please log in first! If you don't have an account, you can create one by registering!</h2>
       </div>
