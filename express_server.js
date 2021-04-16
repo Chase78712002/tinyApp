@@ -62,11 +62,11 @@ const users = {
 }
 app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(cookieParser());
+app.set('view engine', 'ejs');
 app.use(cookieSession({
   name: 'user_id',
-  keys: 'super-secret-key'
+  keys: ['super-secret-key']
 }))
-app.set('view engine', 'ejs');
 
 
 // app.get("/", (req, res) => {
@@ -74,9 +74,9 @@ app.set('view engine', 'ejs');
 //   const templateIndex = { urls: urlDatabase };
 //   res.render('urls_index', templateIndex);
 // });
-const loggedIn = (reqCookie) => {
-  return (Object.keys(reqCookie).length !== 0);
-}
+// const loggedIn = (reqCookie) => {
+//   return (Object.keys(reqCookie).length !== 0);
+// }
 // Main page
 app.get("/urls", (req, res) => {
   console.log('top of url',req.session.user_id);
@@ -149,7 +149,7 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 });
 
 app.get('/alvin', (req, res) => {
-  req.session.newCookie = 'abcde'
+  req.session.newCookie = 'abcde';
   res.cookie('key', 'value');
   res.send('hello');
 })
