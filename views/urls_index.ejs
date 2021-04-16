@@ -13,7 +13,8 @@
 
 <body>
   <%- include('partials/_header') %>
-    <% if (Object.keys(cookie).length===0) { %>
+    <% if (cookie) { %>
+      <% console.log(cookie);%>
       <div>
         <h2>Please log in first! If you don't have an account, you can create one by registering!</h2>
       </div>
