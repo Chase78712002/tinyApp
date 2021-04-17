@@ -4,8 +4,12 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Final Product
 
-!["screenshot description"](#)
-!["screenshot description"](#)
+!["log in page"](https://github.com/Chase78712002/tinyApp/blob/master/docs/login_page.png?raw=true)
+!["registeration page"](https://github.com/Chase78712002/tinyApp/blob/master/docs/register_page.png?raw=true)
+!["editing urls page"](https://github.com/Chase78712002/tinyApp/blob/master/docs/urls_edit_page.png?raw=true)
+!["create new urls page"](https://github.com/Chase78712002/tinyApp/blob/master/docs/urls_new_page.png?raw=true)
+!["urls page when logged in"](https://github.com/Chase78712002/tinyApp/blob/master/docs/urls_page_loggedIn.png?raw=true)
+!["urls page when logged out"](https://github.com/Chase78712002/tinyApp/blob/master/docs/urls_page_loggedOut.png?raw=true)
 
 ## Dependencies
 
