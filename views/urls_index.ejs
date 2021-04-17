@@ -14,8 +14,17 @@
 <body>
   <%- include('partials/_header') %>
     <% if (!cookie) { %>
+      <style>
+        .center {
+          text-align: center;
+          padding: 150px;
+          font-size: 50px;
+          font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+          color: orchid;
+        }
+      </style>
       <div>
-        <h2>Please log in first! If you don't have an account, you can create one by registering!</h2>
+        <p class="center">Please log in first! <br> If you don't have an account, you can create one by registering!</p>
       </div>
       <% } else { %>
         <main style="margin: 1em;">
